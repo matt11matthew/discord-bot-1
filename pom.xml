@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>infureenforcer</artifactId>
+        <groupId>me.matthewe.infure.enforcer</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.matthewe.infure.enforcer.discordbot</groupId>
+    <artifactId>discordbot</artifactId>
+    <version>1.0.0</version>
+    <properties>
+        <pluginPackage>me.matthewe.infure.enforcer.discordbot</pluginPackage>
+    </properties>
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>net.atherial.api</pattern>
+                            <shadedPattern>${pluginPackage}.atherialapi</shadedPattern>
+                        </relocation>
+
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>InfureDiscordBot</finalName>
+                            <minimizeJar>false</minimizeJar>
+                            <outputFile>../output/InfureDiscordBot.jar</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.12</version>
+                <executions>
+                    <execution>
+                        <id>properties-to-lowercase</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>InfureDiscordBot</name>
+                            <regex>.*</regex>
+                            <value>${pluginPackage}</value>
+                            <replacement>$0</replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
+                            <toLowerCase>true</toLowerCase>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                import org.apache.commons.lang.StringUtils
+
+
+
+                                project.properties["pluginPackage"] = StringUtils.lowerCase(project.properties["pluginPackage"])
+//                                project.properties["atherialPath"] = StringUtils.lowerCase(project.properties["atherialPath"])
+                                System.out.println("Building")
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>me.matthewe.infure.enforcer.discordbot.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>net.atherial.api.redis</groupId>
+            <artifactId>atherialredis</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.matthewe.infure.enforcer.common</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0.0</version>
+            <scope>compile
+            </scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.atherial.api.mongo</groupId>
+            <artifactId>atherialmongo</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>4.0.0_39</version>
+        </dependency>
+    </dependencies>
+
+
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter-bintray</name>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
+
+</project>
